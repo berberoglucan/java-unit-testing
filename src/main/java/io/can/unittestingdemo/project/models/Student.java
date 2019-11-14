@@ -19,6 +19,11 @@ public class Student {
 
     public void addCourse(LecturerCourseRecord lecturerCourseRecord) {
 
+        try {
+            Thread.sleep(100L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (lecturerCourseRecord == null) {
             throw new IllegalArgumentException("Can't add course with null lecturer course record");
         }

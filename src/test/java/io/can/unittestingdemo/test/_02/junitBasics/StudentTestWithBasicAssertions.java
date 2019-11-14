@@ -1,9 +1,11 @@
 package io.can.unittestingdemo.test._02.junitBasics;
 
+import io.can.unittestingdemo.project.models.LecturerCourseRecord;
 import io.can.unittestingdemo.project.models.Student;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -106,6 +108,39 @@ public class StudentTestWithBasicAssertions {
         // assertThrows throw edilen exception'i return edebilir. Bu sayede farkli assertion yapabiliriz.
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> student.addCourse(null));
         assertEquals("Can't add course with null lecturer course record", illegalArgumentException.getMessage());
+    }
+
+    @Test
+    @DisplayName("Add course to a student less than 10ms")
+    void addCourseToStudentWithATimeConstraint() {
+        // Bu test belli bir zaman icerisinde calismasini istedigimiz kodlar icindir.
+        // (Unit seviyesinde performans testi)
+
+        // assertTimeOut -> Bir kodun verilen süre icerisinde calisirsa test basarili olur.
+        // Calisma suresi verilen sureyi gecerse test failure olacaktir.
+
+        // Bu assertion icerisinde bir kod parcasi olmadigi icin 10ms altinda calisacaktir.
+        // with Executable
+        assertTimeout(Duration.ofMillis(10L), () -> {
+
+        });
+
+        // ThrowingSupplier ile kodun return ettigi bir degeri yakalayabiliriz
+        // with ThrowingSupplier
+        String result = assertTimeout(Duration.ofMillis(10L), () -> {
+            return "some string result";
+        });
+        assertEquals("some string result", result);
+
+        Student student = new Student("1", "can", "berberoglu");
+        LecturerCourseRecord course = new LecturerCourseRecord();
+        // assertTimeout metodun tamamen bitmesini bekler. Bazen bitmesini istemeyebiliriz.
+        assertTimeout(Duration.ofMillis(200L), () -> student.addCourse(course));
+
+        // assertTimeoutPreemptively -> Surenin aşılıp aşılmadığına bakar. Eğer aşıldıysa metodu durdurur(interrupt)
+        // ve Test failure olur
+        assertTimeoutPreemptively(Duration.ofMillis(100L), () -> student.addCourse(course));
+
     }
 
 }
