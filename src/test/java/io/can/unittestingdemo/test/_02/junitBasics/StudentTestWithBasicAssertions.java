@@ -95,4 +95,17 @@ public class StudentTestWithBasicAssertions {
 
     }
 
+    @Test
+    @DisplayName("Got an exception when a null lecturer course record to student")
+    void throwsExceptionWhenAddToNullCourseToStudent() {
+        Student student = new Student("1", "can", "berberoglu");
+        // assertThrows -> throw edilen exception'ı yakalar ve metoda verilen exception turu ile throw edilen exception turunu karsilastirir.
+        assertThrows(IllegalArgumentException.class, () -> student.addCourse(null));
+        assertThrows(IllegalArgumentException.class, () -> student.addCourse(null), "throws IllegalArgumentException");
+
+        // assertThrows throw edilen exception'i return edebilir. Bu sayede farkli assertion yapabiliriz.
+        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> student.addCourse(null));
+        assertEquals("Can't add course with null lecturer course record", illegalArgumentException.getMessage());
+    }
+
 }
