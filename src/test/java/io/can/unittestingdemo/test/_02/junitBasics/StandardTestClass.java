@@ -52,6 +52,7 @@ public class StandardTestClass {
 
     @Test
     @Disabled("this test disabled and not execute for now") // calismasini istemedigimiz test metotlari icin kullanilir.
+    // @Disabled -> class bazinda kullanilirsa, Class icerisindeki tum testler ignore edilecektir.
     // Yani bu test metodunu ignore et
     void testSomething3() {
         System.out.println("Test: testSomething3");

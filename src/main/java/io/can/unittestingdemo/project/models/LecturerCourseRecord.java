@@ -14,4 +14,32 @@ public class LecturerCourseRecord {
         this.course = course;
         this.semester = semester;
     }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public int getCredit() {
+        return credit;
+    }
+
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public Lecturer getLecturer() {
+        return lecturer;
+    }
+
+    public void setLecturer(Lecturer lecturer) {
+        this.lecturer = lecturer;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
+    }
 }
