@@ -2,6 +2,7 @@ package io.can.unittestingdemo.test._02.junitBasics;
 
 import io.can.unittestingdemo.project.models.LecturerCourseRecord;
 import io.can.unittestingdemo.project.models.Student;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -140,7 +141,75 @@ public class StudentTestWithBasicAssertions {
         // assertTimeoutPreemptively -> Surenin aşılıp aşılmadığına bakar. Eğer aşıldıysa metodu durdurur(interrupt)
         // ve Test failure olur
         assertTimeoutPreemptively(Duration.ofMillis(100L), () -> student.addCourse(course));
+    }
+
+
+    // Assumptions (varsayım) -> Bir varsayıma bağlı olarak testlerin çalışmasını sağlar
+    // Örneğin bazı testlerin sadece dev ortamında çalışmasını isteyebiliriz. Jenkins gibi bir aracın
+    // bu testi çalıştırmasını istemeyebiliriz. Bu varsayımda assumption'ları kullanabiliriz
+    // Varsayımsal olarak çalışmasını istediğimiz testleri metot veya assertion bazında ayarlayabiliriz.
+
+    @Test
+    @DisplayName("Test student creation at only development machine")
+    void shouldCreateStudentWithNameAndSurnameAtDevelopmentMachine() {
+
+
+        // assumeTrue -> varsayımın true değerine göre tüm testi calistirilip calistirilmayacagini belirler.
+        // assumeTrue metodunun varsayimi true degil ise testin devamı ignore edilecektir(calismayacaktir).
+
+        // assumeFalse -> assumeTrue tersi
+
+        // assumeTrue ve assumeFalse -> tum test metodunun ignore edilmesini saglar
+
+        //Assumptions.assumeTrue(System.getProperty("ENV") != null,
+        //        "Aborting test: System property ENV doesn't exist");
+
+        //Assumptions.assumeTrue(System.getProperty("ENV").equals("dev"),
+        // "Aborting test: Not an developer machine");
+
+        Assumptions.assumeTrue("can".equals("can"), "This assumption is true. And test will run");
+
+        final Student student = new Student("1", "can", "berberoglu");
+        assertAll("Student Information",
+                () -> assertEquals("can", student.getName()),
+                () -> assertEquals("berberoglu", student.getSurname()),
+                () -> assertEquals("1", student.getId()));
+
 
     }
+
+    @Test
+    @DisplayName("Test student creation at different environments")
+    void shouldCreateStudentWithNameAndSurnameWithSpecificEnvironment() {
+
+        // assumingThat -> assumeTrue ve assumeFalse 'un aksine tüm test methodunun degil,
+        // bazi assertion'larin ignore edilmesini, bazilarinin ignore edilmemesini saglar
+
+        Student student = new Student("1", "can", "berberoglu");
+
+        String env = System.getProperty("ENV");
+
+        // Eger assumption true degil ise executable ignore edilecektir. (ignore)
+        Assumptions.assumingThat(env != null && env.equals("dev"), () -> {
+            LecturerCourseRecord course = new LecturerCourseRecord();
+            student.addCourse(course);
+            assertEquals(1, student.getStudentCourseRecords().size());
+        });
+
+        Assumptions.assumingThat("can".equals("can"), () -> {
+            LecturerCourseRecord course = new LecturerCourseRecord();
+            student.addCourse(course);
+            assertEquals(1, student.getStudentCourseRecords().size());
+        });
+
+        // Herhangi bir assumption'a bagli degil. Her türlü calistirilacaklardir.
+        assertAll("Student Information",
+                () -> assertEquals("can", student.getName()),
+                () -> assertEquals("berberoglu", student.getSurname()),
+                () -> assertEquals("1", student.getId()));
+
+    }
+
+
 
 }

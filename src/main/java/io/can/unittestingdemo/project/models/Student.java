@@ -43,4 +43,8 @@ public class Student {
     public String getSurname() {
         return surname;
     }
+
+    public Set<StudentCourseRecord> getStudentCourseRecords() {
+        return studentCourseRecords;
+    }
 }
