@@ -11,4 +11,79 @@ public class Course {
     private int credit;
     private Department department; // ManyToOne -> hangi bolume bagli
 
+    public Course(String code) {
+        this.code = code;
+    }
+
+    public Course() {
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public CourseType getCourseType() {
+        return courseType;
+    }
+
+    public void setCourseType(CourseType courseType) {
+        this.courseType = courseType;
+    }
+
+    public int getCredit() {
+        return credit;
+    }
+
+    public void setCredit(int credit) {
+        this.credit = credit;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (!(obj instanceof Course)) {
+            return false;
+        }
+
+        final Course course2 = (Course) obj;
+        return course2.getCode().equals(this.getCode());
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * this.getCode().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return code + "-" + name;
+    }
 }
