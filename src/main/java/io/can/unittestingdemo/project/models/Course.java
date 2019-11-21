@@ -15,6 +15,11 @@ public class Course {
         this.code = code;
     }
 
+    public Course(String code, CourseType courseType) {
+        this.code = code;
+        this.courseType = courseType;
+    }
+
     public Course() {
     }
 
