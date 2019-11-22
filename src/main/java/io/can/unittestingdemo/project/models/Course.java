@@ -15,6 +15,11 @@ public class Course {
         this.code = code;
     }
 
+    // factory method
+    public static Course newCourse(String courseCode) {
+        return new Course(courseCode);
+    }
+
     public Course(String code, CourseType courseType) {
         this.code = code;
         this.courseType = courseType;

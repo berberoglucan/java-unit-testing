@@ -31,11 +31,14 @@ public class ParameterizedTestNotes {
     // olarak gecemketedir.
     // CSV => Comma seperated values
 
+    // 5) Type Conversion -> Parametrik testlerde, test metotlarının aldığı parametreler ile
+    // kaynakların(source'ların Orn. @ValueSource) sagladigi parametreler arasinda
+    // otomatik type conversion yapilabilir. İstersek custom type conversion da yapabiliriz.
+    // Ornegin @ValueSource icerisinde belli formatta yazilmis String ifadeyi, test metoduna
+    // parametre olarak gecilen bir LocalDateTime objesine convert edebiliriz.
+
     // TODO: @CsvSourceFile ile dosyadanda degerler okunabilir. Gerekirse ornek yap.
 
     // TODO: @ArgumentSource sonra bakilabilir.
-
-    // TODO: junit bazi tipleri otomatik olarak convert ederek parametre icine verebilir.
-    //  Bunun icin daha sonra type Conversion incelenebilir (Önemli)
 
 }

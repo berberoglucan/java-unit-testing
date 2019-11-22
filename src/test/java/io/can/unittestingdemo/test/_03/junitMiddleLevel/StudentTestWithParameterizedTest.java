@@ -7,8 +7,13 @@ import io.can.unittestingdemo.project.models.Semester;
 import io.can.unittestingdemo.project.models.Student;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.converter.ArgumentConversionException;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.converter.JavaTimeConversionPattern;
+import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 import org.junit.jupiter.params.provider.*;
 
+import java.time.LocalDate;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -181,4 +186,80 @@ public class StudentTestWithParameterizedTest {
                     () -> assertEquals(CourseType.MANDATORY, courseType));
         }
     }
+
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @DisplayName("TypeConversion")
+    class TypeConversionDemo {
+
+        @BeforeAll
+        void setUp() {
+            student = new Student("1", "can","berberoglu");
+        }
+
+        // enum conversion
+        @ParameterizedTest
+        // Junit string degerleri otomatik olarak CourseType tipine convert edecektir.
+        // Junit string degerleri cogu sinifa convert edebilmektedir. User guide'dan bakilabilir
+        @ValueSource(strings = {"MANDATORY", "ELECTIVE"})
+        @DisplayName("Auto enum conversion")
+        void addCourseToStudentWithEnumConversion(CourseType courseType) {
+            String courseCode = String.valueOf(new Random().nextInt(200));
+            Course course = new Course(courseCode, courseType);
+            LecturerCourseRecord courseRecord = new LecturerCourseRecord(course, new Semester());
+            student.addCourse(courseRecord);
+            assertFalse(student.getStudentCourseRecords().isEmpty());
+            assertTrue(student.isTakeCourse(course));
+        }
+
+        // Factory method or constructor conversation
+        @ParameterizedTest
+        @ValueSource(strings = {"101", "103", "105"}) // Course icerisinde courseCode alan constructor oldugu icin Junit
+        // bu constructor'i kullanip objeyi bize verecektir.
+        // Constructor olmasaydi course icerisinde bulunan factory metodunu bulup calistiracakti.
+        @DisplayName("Factory method or constructor conversation")
+        void addCourseToStudentWithFactoryOrConstructorConversation(Course course) {
+            LecturerCourseRecord courseRecord = new LecturerCourseRecord(course, new Semester());
+            student.addCourse(courseRecord);
+            assertFalse(student.getStudentCourseRecords().isEmpty());
+            assertTrue(student.isTakeCourse(course));
+        }
+
+        // conversion using SimpleConverter with @ConvertWith -> kendi converter class'imizi yazabiliriz.
+
+        @ParameterizedTest
+        @ValueSource(strings = {"101", "103", "105"})
+        @DisplayName("conversion using SimpleConverter with @ConvertWith")
+        // CourseConverter static class'ini kullanacaktir.
+        void addCourseToStudentWithSimpleConverterClass(@ConvertWith(CourseConverter.class) Course course) {
+            LecturerCourseRecord courseRecord = new LecturerCourseRecord(course, new Semester());
+            student.addCourse(courseRecord);
+            assertFalse(student.getStudentCourseRecords().isEmpty());
+            assertTrue(student.isTakeCourse(course));
+        }
+
+        // conversation with @JavaTimeConversationPattern -> verilen string formatindaki tarihi LocalDate veya LocalTime
+        // convert edebiliriz.
+        @ParameterizedTest(name = "{index} --> first: {0}") // ozel isimlendirme
+        @ValueSource(strings = {"19.01.1995", "27.07.1995"})
+        @DisplayName("conversation with @JavaTimeConversationPattern")
+        void addCourseToStudentWithLocalDateTime(@JavaTimeConversionPattern("dd.MM.yyyy") LocalDate date) {
+            Course course = Course.newCourse(String.valueOf(new Random().nextInt(200)));
+            LecturerCourseRecord courseRecord = new LecturerCourseRecord(course, new Semester(date));
+            student.addCourse(courseRecord);
+            assertFalse(student.getStudentCourseRecords().isEmpty());
+            assertTrue(student.isTakeCourse(course));
+        }
+
+
+    }
+
+    // Course converter class
+    static class CourseConverter extends SimpleArgumentConverter {
+        @Override
+        protected Object convert(Object source, Class<?> targetType) throws ArgumentConversionException {
+            return Course.newCourse((String) source);
+        }
+    }
+
 }
