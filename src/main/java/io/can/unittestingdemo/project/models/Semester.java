@@ -11,6 +11,7 @@ public class Semester {
 
     private int year;
     private Term term;
+    private int addDropPeriodInWeek = 2;
 
     public Semester(LocalDate localDate) {
         this.year = localDate.getYear();
@@ -33,6 +34,11 @@ public class Semester {
 
         return SUMMER;
     }
+
+    public void setAddDropPeriodInWeek(int addDropPeriodInWeek) {
+        this.addDropPeriodInWeek = addDropPeriodInWeek;
+    }
+
 
     public boolean isActive() {
         return this.equals(new Semester());

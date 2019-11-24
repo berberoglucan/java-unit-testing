@@ -1,6 +1,8 @@
 package io.can.unittestingdemo.project.models;
 
+import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class Student {
@@ -8,6 +10,7 @@ public class Student {
     private final String id;
     private final String name;
     private final String surname;
+    private LocalDate dob;
     private Set<StudentCourseRecord> studentCourseRecords = new HashSet<>(); // OneToMany -> hangi dersleri aliyor
     private Department department; // ManyToOne -> hangi bolume bagli
 
@@ -15,6 +18,13 @@ public class Student {
         this.id = id;
         this.name = name;
         this.surname = surname;
+    }
+
+    public Student(String id, String name, String surname, LocalDate dob) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.dob = dob;
     }
 
     public void addCourse(LecturerCourseRecord lecturerCourseRecord) {
@@ -44,6 +54,10 @@ public class Student {
         return surname;
     }
 
+    public LocalDate getDob() {
+        return dob;
+    }
+
     public Set<StudentCourseRecord> getStudentCourseRecords() {
         return studentCourseRecords;
     }
@@ -53,5 +67,17 @@ public class Student {
                 .map(StudentCourseRecord::getLecturerCourseRecord)
                 .map(LecturerCourseRecord::getCourse)
                 .anyMatch(course1 -> course1.equals(course));
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", dob=" + dob +
+                ", studentCourseRecords=" + studentCourseRecords +
+                ", department=" + department +
+                '}';
     }
 }
